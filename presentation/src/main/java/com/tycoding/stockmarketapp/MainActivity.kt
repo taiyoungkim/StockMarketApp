@@ -22,5 +22,6 @@ class MainActivity : ComponentActivity() {
                 }
             }
         }
+        application.resources.getString(R.string.API_KEY)
     }
 }
