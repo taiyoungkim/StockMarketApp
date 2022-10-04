@@ -1,8 +1,11 @@
 package com.tycoding.data.repository
 
 import com.opencsv.CSVReader
+import com.tycoding.data.csv.CSVParser
+import com.tycoding.data.csv.CompanyListingsParser
 import com.tycoding.data.local.StockDatabase
 import com.tycoding.data.mapper.toCompanyListing
+import com.tycoding.data.mapper.toCompanyListingEntity
 import com.tycoding.data.remote.StockApi
 import com.tycoding.domain.model.CompanyListing
 import com.tycoding.domain.repository.StockRepository
@@ -18,7 +21,8 @@ import javax.inject.Singleton
 @Singleton
 class StockRepositoryImpl @Inject constructor(
     val api: StockApi,
-    val db: StockDatabase
+    val db: StockDatabase,
+    val companyListingsParser: CSVParser<CompanyListing>
 ): StockRepository {
 
     private val dao = db.dao
@@ -42,12 +46,28 @@ class StockRepositoryImpl @Inject constructor(
             }
             val remoteListings = try {
                 val response = api.getListings()
+                companyListingsParser.parse(response.byteStream())
             } catch (e: IOException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
+                null
             } catch (e: HttpException) {
                 e.printStackTrace()
                 emit(Resource.Error("Couldn't load data"))
+                null
+            }
+
+            remoteListings?.let { listings ->
+                dao.clearCompanyListings()
+                dao.insertCompanyListings(
+                    listings.map { it.toCompanyListingEntity() }
+                )
+                emit(Resource.Success(
+                    data = dao
+                        .searchCompanyListing("")
+                        .map { it.toCompanyListing() }
+                ))
+                emit(Resource.Loading(false))
             }
         }
     }
