@@ -17,9 +17,14 @@ import javax.inject.Inject
 class CompanyListingsViewModel @Inject constructor(
     private val repository: StockRepository
 ): ViewModel() {
+
     var state by mutableStateOf(CompanyListingsState())
 
     private var searchJob: Job? = null
+
+    init {
+        getCompanyListings()
+    }
 
     fun onEvent(event: CompanyListingsEvent) {
         when(event) {
@@ -37,7 +42,7 @@ class CompanyListingsViewModel @Inject constructor(
         }
     }
 
-    fun getCompanyListings(
+    private fun getCompanyListings(
         query: String = state.searchQuery.lowercase(),
         fetchFromRemote: Boolean = false
     ) {

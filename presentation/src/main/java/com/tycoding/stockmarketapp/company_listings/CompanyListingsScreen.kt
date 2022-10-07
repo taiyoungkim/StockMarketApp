@@ -16,10 +16,12 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.google.accompanist.swiperefresh.SwipeRefresh
 import com.google.accompanist.swiperefresh.rememberSwipeRefreshState
 import com.ramcosta.composedestinations.annotation.Destination
+import com.ramcosta.composedestinations.annotation.RootNavGraph
 import com.ramcosta.composedestinations.navigation.DestinationsNavigator
 
+@RootNavGraph(start = true)
 @Composable
-@Destination(start = true)
+@Destination
 fun CompanyListingsScreen(
     navigator: DestinationsNavigator,
     viewModel: CompanyListingsViewModel = hiltViewModel()
@@ -36,13 +38,13 @@ fun CompanyListingsScreen(
             onValueChange = {
                 viewModel.onEvent(
                     CompanyListingsEvent.OnSearchQueryChange(it)
-                ) 
+                )
             },
             modifier = Modifier
                 .padding(16.dp)
                 .fillMaxWidth(),
             placeholder = {
-                Text(text = "Search..")
+                Text(text = "Search...")
             },
             maxLines = 1,
             singleLine = true
@@ -63,7 +65,7 @@ fun CompanyListingsScreen(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clickable {
-
+//                                navigator.navigate()
                             }
                             .padding(16.dp)
                     )
@@ -77,6 +79,5 @@ fun CompanyListingsScreen(
                 }
             }
         }
-
     }
 }
