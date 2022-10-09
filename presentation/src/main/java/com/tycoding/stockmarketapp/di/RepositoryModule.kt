@@ -2,8 +2,10 @@ package com.tycoding.stockmarketapp.di
 
 import com.tycoding.data.csv.CSVParser
 import com.tycoding.data.csv.CompanyListingsParser
+import com.tycoding.data.csv.IntradayInfoParser
 import com.tycoding.data.repository.StockRepositoryImpl
 import com.tycoding.domain.model.CompanyListing
+import com.tycoding.domain.model.IntradayInfo
 import com.tycoding.domain.repository.StockRepository
 import dagger.Binds
 import dagger.Module
@@ -26,4 +28,10 @@ abstract class RepositoryModule {
     abstract fun bindStockRepository(
         stockRepositoryImpl: StockRepositoryImpl
     ): StockRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindIntradayInfoParser(
+        intradayInfoParser: IntradayInfoParser
+    ): CSVParser<IntradayInfo>
 }
